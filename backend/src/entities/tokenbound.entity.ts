@@ -15,11 +15,11 @@ export class TokenboundEntity extends CustomBaseEntity {
    @Column({type: "integer", default:0})
    point!: number;
 
-   @Column({type: "integer", default:0})
-   level!: number;
-
    @Column({type: "text"})
    name!: string;
+
+   @Column({type: "text"})
+   image!: string;
 
    @Column({type: "float", default:0})
    price!: number;

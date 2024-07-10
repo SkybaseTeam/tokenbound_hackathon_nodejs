@@ -6,6 +6,9 @@ export class TokenboundEntity extends CustomBaseEntity {
    @Column({ name: "token_contract_address", type: "text" })
    tokenContractAddress!: string;
 
+   @Column({ name: "wallet_address", type: "text" })
+   walletAddress!: string;
+
    @Column({ name: "token_id", type: "integer" })
    tokenId!: number;
 

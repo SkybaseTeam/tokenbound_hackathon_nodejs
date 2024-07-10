@@ -23,7 +23,7 @@ const dataSourceOptions: DataSourceOptions = {
    username: DATABASE_USER,
    password: DATABASE_PASSWORD,
    database: DATABASE_NAME,
-   synchronize: false,
+   synchronize: true,
    logging: true,
    entities: [UsersEntity, JobManagerEntity, CrawlerStatusEntity,CollectionEntity, NftEntity, TokenboundEntity],
 };
@@ -34,7 +34,7 @@ export const connectWithDatabase = async (
    try {
       const dataSource: DataSource = new DataSource(dataSourceOptions);
       (await dataSource.initialize())
-         .synchronize(false)
+         .synchronize(true)
          .then(() => {
             console.log("Synchronized data source".green.bold);
          })

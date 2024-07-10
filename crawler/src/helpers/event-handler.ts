@@ -2,7 +2,8 @@ import { DataSource } from "typeorm";
 import { DataDecoder } from "./data-decoder";
 // import Databases from "../services/database.service";
 import axios from "axios";
-import { NftService } from "../services/nft.service";
+import { TokenboundService } from '../services/tokenbound.service';
+// import { TokenboundEntity } from "../entities/tokenbound.entity";
 
 export class EventHandler {
    private readonly database: DataSource;
@@ -20,14 +21,24 @@ export class EventHandler {
       const { data: nftMetadata } = await axios.get(
          `https://grow-api.memeland.com/token/metadata/${tokenId}.json`
       );
-      const nftService: NftService = new NftService(this.database);
-      nftService.createNft({
+      const tokenboundService: TokenboundService = new TokenboundService(this.database);
+      tokenboundService.createNewEntity({
          tokenId: tokenId,
-         name: nftMetadata.name,
-         user: userAddress,
+         walletAddress : userAddress,
+         name :nftMetadata.name,
          image: nftMetadata.image,
-      });
+         tokenContractAddress : "",
+         
+      })
+      // nftService.createNft({
+      //    tokenId: tokenId,
+      //    name: nftMetadata.name,
+      //    user: userAddress,
+      //    image: nftMetadata.image,
+      // });
    };
+
+   
    // static async handleListedEvent(
    //    { event }: any,
    //    database: DataSource

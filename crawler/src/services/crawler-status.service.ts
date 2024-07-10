@@ -9,13 +9,12 @@ export class CrawlerStatusService extends BaseService<CrawlerStatusEntity>{
       this.database = database;
    }
 
-   public async getCrawlerStatus(): Promise<DeepPartial<CrawlerStatusEntity>> {
+   public async getCrawlerStatus(crawlerType : string): Promise<DeepPartial<CrawlerStatusEntity>> {
       try {
          const lastCrawlerStatus: CrawlerStatusEntity = (await this.database
             .getRepository(CrawlerStatusEntity)
             .findOne({
-               where: {},
-               order: { id: "DESC" },
+               where: {contractName : crawlerType} as any,
             })) as CrawlerStatusEntity;
          return lastCrawlerStatus;
       } catch (error) {
@@ -36,14 +35,14 @@ export class CrawlerStatusService extends BaseService<CrawlerStatusEntity>{
    // }
 
    public async updateCrawlerStatus(
-      crawlerStatus: DeepPartial<CrawlerStatusEntity>
+      crawlerStatus: DeepPartial<CrawlerStatusEntity>,
+      crawlerType : string
    ): Promise<any> {
       try {
          const lastCrawlerStatus: CrawlerStatusEntity = (await this.database
             .getRepository(CrawlerStatusEntity)
             .findOne({
-               where: {},
-               order: { id: "DESC" },
+               where: {contractName : crawlerType},
             })) as CrawlerStatusEntity;
 
          Object.assign(lastCrawlerStatus, crawlerStatus);

@@ -1,5 +1,5 @@
-import Koa from "koa";
-import { DefaultState, DefaultContext } from "koa";
+// import Koa from "koa";
+// import { DefaultState, DefaultContext } from "koa";
 import "colors";
 // import Router from "koa-router";
 import { config } from "dotenv";
@@ -9,6 +9,7 @@ import { CrawlerStatusEntity } from "./crawler-status.entity";
 import { JobManagerEntity } from "./job-manager.entity";
 import { CollectionEntity } from "./collection.entity";
 import { NftEntity } from "./nft.entity";
+import { TokenboundEntity } from './tokenbound.entity';
 
 config();
 
@@ -24,7 +25,7 @@ const dataSourceOptions: DataSourceOptions = {
    database: DATABASE_NAME,
    synchronize: true,
    logging: true,
-   entities: [UsersEntity, JobManagerEntity, CrawlerStatusEntity,CollectionEntity, NftEntity],
+   entities: [UsersEntity, JobManagerEntity, CrawlerStatusEntity,CollectionEntity, NftEntity, TokenboundEntity],
 };
 
 export const connectWithDatabase = async (

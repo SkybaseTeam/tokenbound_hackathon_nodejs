@@ -10,7 +10,7 @@ import {
    UnauthorizedError,
 } from "routing-controllers";
 import { connectWithDatabase } from "./entities";
-import { AuthController, UserController } from "./controllers";
+import { AuthController, CollectionController, TokenboundController, UserController } from "./controllers";
 import { services } from "./services";
 import { Container } from "typedi";
 import { decode, verify } from "jsonwebtoken";
@@ -31,7 +31,7 @@ let { PORT, JWT_SECRET } = process.env;
 const startApp = async () => {
    const dataSource = await connectWithDatabase();
    const app: Koa<DefaultState, DefaultContext> = createKoaServer({
-      controllers: [UserController, AuthController],
+      controllers: [UserController, AuthController, CollectionController, TokenboundController],
       async authorizationChecker(action: Action): Promise<boolean> {
          try {
             const token = getJWT(action.request.headers);

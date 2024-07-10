@@ -9,16 +9,29 @@ export class BaseService<T extends CustomBaseEntity> {
    }
 
    async getAllData(): Promise<Array<Partial<T>>> {
-      return await this.repository.find();
+      try {
+         return await this.repository.find();
+      } catch (error) {
+         return [];
+      }      
    }
 
    async getById(id: number): Promise<Partial<T> | null> {
-      return await this.repository.findOne(id as any);
+      try {
+         return await this.repository.findOne(id as any);
+      } catch (error) {
+        return null;
+      }
+      
    }
 
    async create(data: DeepPartial<T>) {
-      const newEntity: DeepPartial<T> = await this.repository.create(data);
-      return await this.repository.save(newEntity);
+      try {
+         const newEntity: DeepPartial<T> = this.repository.create(data);
+         return await this.repository.save(newEntity);
+      } catch (error) {
+         return null;
+      }
    }
 
    async update(id: number, body: DeepPartial<T>): Promise<Partial<T> | null> {

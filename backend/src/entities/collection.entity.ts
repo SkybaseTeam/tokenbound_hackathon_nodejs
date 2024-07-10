@@ -16,13 +16,19 @@ export class CollectionEntity extends CustomBaseEntity{
    @Column({ nullable: false })
    symbol!: string;
 
-   @Column({ nullable: false, name: "mint_price" })
-   mintPrice!: string;
+   @Column({ nullable: false, name: "mint_price",type : "float" })
+   mintPrice!: number;
+
+   @Column({})
+   image !: string;
 
    @OneToMany(() => NftEntity, (nft) => nft.collection)
    nfts!: NftEntity[];
 
-   constructor() {
+   
+
+   constructor(partial?: Partial<CollectionEntity>) {
       super();
+      Object.assign(this, partial);
    }
 }

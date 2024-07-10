@@ -3,6 +3,7 @@ import { DataDecoder } from "./data-decoder";
 // import Databases from "../services/database.service";
 import axios from "axios";
 import { TokenboundService } from '../services/tokenbound.service';
+import { TokenboundEntity } from "src/entities/tokenbound.entity";
 // import { TokenboundEntity } from "../entities/tokenbound.entity";
 
 export class EventHandler {
@@ -37,6 +38,21 @@ export class EventHandler {
       //    image: nftMetadata.image,
       // });
    };
+
+   public handleRegistryCreateAccount = async(event : any) => {
+      const tokenId = DataDecoder.feltToInt({
+         low: event.data[1],
+         high: event.data[2],
+      });
+
+      const tokenboundService: TokenboundService  = new TokenboundService(this.database);
+      const tokenbound : TokenboundEntity | null = await tokenboundService.getTokenboundEntityByTokenId(tokenId);
+      if(!tokenbound){
+         throw new Error("Cannot find tokenbound to modify")
+      }
+      tokenbound.tokenContractAddress = event.data[0];
+      return await tokenboundService.updateEntityById(tokenbound.id, tokenbound);
+   }
 
    
    // static async handleListedEvent(

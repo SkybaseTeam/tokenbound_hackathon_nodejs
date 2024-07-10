@@ -57,6 +57,7 @@ export class CrawlerProcess {
          case CrawlerType.REGISTRY: {
             switch (event.keys[0]) {
                case RegistryEvent.ACCOUNT_CREATED: {
+                  eventHandler.handleRegistryCreateAccount(event);
                }
             }
          }

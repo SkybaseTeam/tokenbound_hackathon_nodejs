@@ -1,43 +1,32 @@
 import "colors";
 // import Router from "koa-router";
-import { config } from "dotenv";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { CrawlerStatusEntity } from "./crawler-status.entity";
 import { JobManagerEntity } from "./job-manager.entity";
 import { CollectionEntity } from "./collection.entity";
 import { NftEntity } from "./nft.entity";
 import { TokenboundEntity } from "./tokenbound.entity";
+import { Config } from "../config";
 
-config();
-
-const { DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME,DATABASE_PORT } =
-   process.env;
-console.log(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME,DATABASE_PORT);
-
-let databaseHost = DATABASE_HOST || "pg-27090a41-bling-blockchain.h.aivencloud.com";
-let databaseUser = DATABASE_USER || "avnadmin";
-let databasePassword = DATABASE_PASSWORD || "AVNS_5tBInksddd2BSHuiSqx";
-let databaseName = DATABASE_NAME || "bling-bling";
-let databasePort = Number(DATABASE_PORT) || 19096;
-
+const config :Config = new Config();
 const dataSourceOptions: DataSourceOptions = {
    type: "postgres",
-   host: databaseHost,
-   username: databaseUser,
-   password: databasePassword,
-   database: databaseName,
+   host: config.DATABASE_HOST,
+   username: config.DATABASE_USER,
+   password: config.DATABASE_PASSWORD,
+   database: config.DATABASE_NAME,
    synchronize: false,
    logging: true,
-   port : databasePort,
-   ssl: {
-      rejectUnauthorized: false, // Disables SSL certificate verification
-   },
+   port: config.DATABASE_PORT,
+   // ssl: {
+   //    rejectUnauthorized: false, // Disables SSL certificate verification
+   // },
    entities: [
       JobManagerEntity,
       CrawlerStatusEntity,
       CollectionEntity,
       NftEntity,
-      TokenboundEntity
+      TokenboundEntity,
    ],
 };
 

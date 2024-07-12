@@ -26,6 +26,9 @@ export class TokenboundEntity extends CustomBaseEntity {
    @Column({type: "float", default:0})
    price: number;
 
+   @Column({ nullable: false, default: false })
+   listing: Boolean;
+
    @JoinColumn({ name: 'collection_id' })
    @ManyToOne(() => CollectionEntity, (collection) => collection.tokenboundAccounts)
    collection: CollectionEntity;

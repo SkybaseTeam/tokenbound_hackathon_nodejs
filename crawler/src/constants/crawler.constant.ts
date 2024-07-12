@@ -5,4 +5,8 @@ export class CrawlerConstants {
       "0x03abac757880b8b343e30e14f83981a6b949580f213edec72feb41757c950d36";
    static readonly ERC721_CONTRACT_ADDRESS =
       "0x04fbc43ca36833a382c1e2f5d1d4bb82c84abe8a78f69eea0986f6994b7cbf62";
+   static readonly MARKET_CONTRACT_ADDRESS =
+      "";
+   static readonly ERC721_ITEM_CONTRACT_ADDRESS =
+      "";
 }

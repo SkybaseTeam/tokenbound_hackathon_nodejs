@@ -18,9 +18,9 @@ const dataSourceOptions: DataSourceOptions = {
    synchronize: false,
    logging: true,
    port: config.DATABASE_PORT,
-   // ssl: {
-   //    rejectUnauthorized: false, // Disables SSL certificate verification
-   // },
+   ssl: {
+      rejectUnauthorized: false, // Disables SSL certificate verification
+   },
    entities: [
       JobManagerEntity,
       CrawlerStatusEntity,

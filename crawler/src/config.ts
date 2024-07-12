@@ -22,28 +22,28 @@ export class Config {
    public ERC20: string;
 
    constructor() {
-      this.DATABASE_HOST =
-         process.env.DATABASE_HOST ||
-         "pg-27090a41-bling-blockchain.h.aivencloud.com";
-      this.DATABASE_USER = process.env.DATABASE_USER || "postgres";
-      this.DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || "Phongsql123";
-      this.DATABASE_NAME = process.env.DATABASE_NAME || "ventorii-nft";
-      this.DATABASE_PORT = Number(process.env.DATABASE_PORT) || 5432;
-      this.PORT = Number(process.env.PORT) || 5000;
-      this.JWT_SECRET =
-         process.env.JWT_SECRET || "dijgnidfgidgojdngkdsfjnfkdjsngkjenf";
-
       // this.DATABASE_HOST =
       //    process.env.DATABASE_HOST ||
       //    "pg-27090a41-bling-blockchain.h.aivencloud.com";
-      // this.DATABASE_USER = process.env.DATABASE_USER || "avnadmin";
-      // this.DATABASE_PASSWORD =
-      //    process.env.DATABASE_PASSWORD || "AVNS_5tBInksddd2BSHuiSqx";
-      // this.DATABASE_NAME = process.env.DATABASE_NAME || "bling-bling";
-      // this.DATABASE_PORT = Number(process.env.DATABASE_PORT) || 19096;
+      // this.DATABASE_USER = process.env.DATABASE_USER || "postgres";
+      // this.DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || "Phongsql123";
+      // this.DATABASE_NAME = process.env.DATABASE_NAME || "ventorii-nft";
+      // this.DATABASE_PORT = Number(process.env.DATABASE_PORT) || 5432;
       // this.PORT = Number(process.env.PORT) || 5000;
       // this.JWT_SECRET =
       //    process.env.JWT_SECRET || "dijgnidfgidgojdngkdsfjnfkdjsngkjenf";
+
+      this.DATABASE_HOST =
+         process.env.DATABASE_HOST ||
+         "pg-27090a41-bling-blockchain.h.aivencloud.com";
+      this.DATABASE_USER = process.env.DATABASE_USER || "avnadmin";
+      this.DATABASE_PASSWORD =
+         process.env.DATABASE_PASSWORD || "AVNS_5tBInksddd2BSHuiSqx";
+      this.DATABASE_NAME = process.env.DATABASE_NAME || "bling-bling";
+      this.DATABASE_PORT = Number(process.env.DATABASE_PORT) || 19096;
+      this.PORT = Number(process.env.PORT) || 5000;
+      this.JWT_SECRET =
+         process.env.JWT_SECRET || "dijgnidfgidgojdngkdsfjnfkdjsngkjenf";
 
       this.PUBLIC_ACCOUNT_CLASS_HASH =
          process.env.PUBLIC_ACCOUNT_CLASS_HASH ||

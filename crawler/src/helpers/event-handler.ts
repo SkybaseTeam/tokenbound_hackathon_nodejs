@@ -2,8 +2,8 @@ import { DataSource } from "typeorm";
 import { DataDecoder } from "./data-decoder";
 // import Databases from "../services/database.service";
 import axios from "axios";
-import { TokenboundService } from '../services/tokenbound.service';
-import { TokenboundEntity } from "src/entities/tokenbound.entity";
+import { TokenboundService } from "../services/tokenbound.service";
+import { TokenboundEntity } from "../entities/tokenbound.entity";
 // import { TokenboundEntity } from "../entities/tokenbound.entity";
 
 export class EventHandler {
@@ -22,15 +22,20 @@ export class EventHandler {
       const { data: nftMetadata } = await axios.get(
          `https://grow-api.memeland.com/token/metadata/${tokenId}.json`
       );
-      const tokenboundService: TokenboundService = new TokenboundService(this.database);
-      tokenboundService.createNewEntity({
+
+      const tokenboundService: TokenboundService = new TokenboundService(
+         this.database
+      );
+      const tokenboundDuplicated =
+         await tokenboundService.getTokenboundEntityByTokenId(tokenId);
+      if (tokenboundDuplicated) throw new Error("Tokenbound already created");
+      await tokenboundService.createNewTokenboundEntity({
          tokenId: tokenId,
-         walletAddress : userAddress,
-         name :nftMetadata.name,
+         walletAddress: userAddress,
+         name: nftMetadata.name,
          image: nftMetadata.image,
-         tokenContractAddress : "",
-         
-      })
+      });
+      // newTokenbound.collection
       // nftService.createNft({
       //    tokenId: tokenId,
       //    name: nftMetadata.name,
@@ -39,22 +44,28 @@ export class EventHandler {
       // });
    };
 
-   public handleRegistryCreateAccount = async(event : any) => {
+   public handleRegistryCreateAccount = async (event: any) => {
       const tokenId = DataDecoder.feltToInt({
          low: event.data[1],
          high: event.data[2],
       });
 
-      const tokenboundService: TokenboundService  = new TokenboundService(this.database);
-      const tokenbound : TokenboundEntity | null = await tokenboundService.getTokenboundEntityByTokenId(tokenId);
-      if(!tokenbound){
-         throw new Error("Cannot find tokenbound to modify")
+      const tokenboundService: TokenboundService = new TokenboundService(
+         this.database
+      );
+      const tokenbound: TokenboundEntity | null =
+         await tokenboundService.getTokenboundEntityByTokenId(tokenId);
+      if (!tokenbound) {
+         throw new Error("Cannot find tokenbound to modify");
       }
-      tokenbound.tokenContractAddress = event.data[0];
-      return await tokenboundService.updateEntityById(tokenbound.id, tokenbound);
-   }
+      tokenbound.tokenboundAddress = event.data[0];
+      // tokenbound.tokenContractAddress = event.data[0];
+      return await tokenboundService.updateEntityById(
+         tokenbound.id,
+         tokenbound
+      );
+   };
 
-   
    // static async handleListedEvent(
    //    { event }: any,
    //    database: DataSource

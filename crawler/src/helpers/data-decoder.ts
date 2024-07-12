@@ -4,62 +4,6 @@
 // import { RpcProvider, Contract } from "starknet";
 
 export class DataDecoder {
-   // static async getBlockNumber() {
-   //    const body = {
-   //       jsonrpc: "2.0",
-   //       method: "starknet_blockNumber",
-   //       id: 0,
-   //    };
-   //    const { data } = await axios.post(CrawlerConstants.URL, body);
-   //    return data?.result || 0;
-   // }
-
-   // static async getEvent({
-   //    contractAddress,
-   //    fromBlock,
-   //    toBlock,
-   // }: any): Promise<any[]> {
-   //    const body = {
-   //       jsonrpc: "2.0",
-   //       method: "starknet_getEvents",
-   //       params: [
-   //          {
-   //             from_block: {
-   //                block_number: fromBlock,
-   //             },
-   //             to_block: {
-   //                block_number: toBlock,
-   //             },
-   //             address: contractAddress,
-   //             chunk_size: 1000,
-   //             keys: [Object.values(EventType)],
-   //          },
-   //       ],
-   //       id: 1,
-   //    };
-   //    const { data } = await axios.post(CrawlerConstants.URL, body);
-   //    return data?.result?.events || [];
-   // }
-
-   // static async getEvents({ contractAddressArray, fromBlock }: any) {
-   //    const toBlock = Math.min(
-   //       fromBlock + CrawlerConstants.JUMP_STEP,
-   //       await this.getBlockNumber()
-   //    );
-   //    const events = [];
-   //    console.log(`Getting events from ${fromBlock} to ${toBlock}`);
-   //    for (const contractAddress of contractAddressArray) {
-   //       const event = await this.getEvent({
-   //          contractAddress,
-   //          fromBlock,
-   //          toBlock,
-   //       });
-   //       events.push(...event);
-   //    }
-   //    console.log(`Got ${events.length} events`);
-
-   //    return { events, toBlock };
-   // }
 
    static feltToStr = (felt: number) => {
       let hex = felt.toString(16);

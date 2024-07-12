@@ -15,6 +15,7 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "baseUrl": ".",
+      "strictPropertyInitialization": false,
       "strict": true,
       "noImplicitAny": true
    },

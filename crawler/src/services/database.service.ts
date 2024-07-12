@@ -1,6 +1,5 @@
 import { CollectionEntity } from "../entities/collection.entity";
 import { NftEntity } from "../entities/nft.entity";
-import { UsersEntity } from "../entities/users.entity";
 import { DataSource } from "typeorm";
 
 class Databases {
@@ -24,7 +23,7 @@ class Databases {
    static async eraseData(database: DataSource) {
       await database.getRepository(CollectionEntity).clear();
       await database.getRepository(NftEntity).clear();
-      await database.getRepository(UsersEntity).clear();
+      // await database.getRepository(UsersEntity).clear();
    }
 
    static async saveNft(data: NftEntity, database: DataSource) {
@@ -38,16 +37,16 @@ class Databases {
       return await database.getRepository(NftEntity).create(data);
    }
 
-   static async changeNFTOwner({ tokenId, owner }: any, database: DataSource) {
-      return await database.getRepository(NftEntity).update(
-         {
-            tokenId: tokenId,
-         },
-         {
-            user: owner,
-         }
-      );
-   }
+   // static async changeNFTOwner({ tokenId, owner }: any, database: DataSource) {
+   //    return await database.getRepository(NftEntity).update(
+   //       {
+   //          tokenId: tokenId,
+   //       },
+   //       {
+   //          user: owner,
+   //       }
+   //    );
+   // }
 
    static async changeNFTStatus(
       { tokenId, listing }: any,
@@ -103,11 +102,11 @@ class Databases {
       .getRepository(CollectionEntity).findOne({where : { address: address }});
    }
 
-   static async saveOwner(data:any, database: DataSource) {
-      const foundOwner = await database.getRepository(UsersEntity).findOne({where : { address: data.address }});
-      if (foundOwner) return foundOwner;
-      return await database.getRepository(UsersEntity).create(data);
-   }
+   // static async saveOwner(data:any, database: DataSource) {
+   //    const foundOwner = await database.getRepository(UsersEntity).findOne({where : { address: data.address }});
+   //    if (foundOwner) return foundOwner;
+   //    return await database.getRepository(UsersEntity).create(data);
+   // }
 }
 
 export default Databases;

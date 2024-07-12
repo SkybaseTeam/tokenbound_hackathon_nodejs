@@ -4,8 +4,25 @@ import { CrawlerStatusService } from "../services/crawler-status.service";
 import { DataSource, DeepPartial } from "typeorm";
 import { EventHandler } from "./event-handler";
 import { Nft721Event, RegistryEvent } from "../enums/event.enum";
+import axios from "axios";
+// import { CrawlerConstants } from "../constants/crawler.constant";
+import { constants, RpcProvider } from "starknet";
 
 export class CrawlerProcess {
+   public static async getBlockNumber() {
+      try {
+         const body = {
+            jsonrpc: "2.0",
+            method: "starknet_blockNumber",
+            id: 0,
+         };
+         const { data } = await axios.post("https://starknet-sepolia.public.blastapi.io/rpc/v0_7", body);
+         return data?.result || 0;
+      } catch (error) {
+         throw error;
+      }
+   }
+
    public static setUpFirstBlock = async (
       database: DataSource,
       crawlerType: CrawlerType,
@@ -26,6 +43,7 @@ export class CrawlerProcess {
             }) as CrawlerStatusEntity
          );
       }
+
       return crawlerStatusEntity.eventSeq
          ? crawlerStatusEntity.eventSeq
          : defaultBlocknumber;
@@ -40,7 +58,7 @@ export class CrawlerProcess {
          new CrawlerStatusService(database);
       let crawlerStatusEntity: DeepPartial<CrawlerStatusEntity> =
          await crawlerStatusService.getCrawlerStatus(crawlerType);
-      crawlerStatusEntity.eventSeq = blocknumber + 1;
+      crawlerStatusEntity.eventSeq = blocknumber;
       await crawlerStatusService.updateCrawlerStatus(
          crawlerStatusEntity,
          crawlerType
@@ -69,5 +87,31 @@ export class CrawlerProcess {
             }
          }
       }
+   };
+
+   public static getEvents = async (fromBlock: number, eventType : any, address : string) => {
+      console.log(`Start crawling event Scout`);
+      const providerRPC = new RpcProvider({
+         nodeUrl: constants.NetworkName.SN_SEPOLIA,
+      });
+
+      const lastBlock = fromBlock;
+      const nextCursor: number =
+         Number(lastBlock) + 100 < Number(lastBlock)
+            ? Number(lastBlock)
+            : Number(lastBlock) + 100;
+      const eventsList = await providerRPC.getEvents({
+         address: address,
+         from_block: { block_number: Number(lastBlock) },
+         to_block: { block_number: nextCursor },
+         keys: [eventType],
+         chunk_size: 100,
+      });
+
+      console.log(
+         `DONE crawling event Point from ${lastBlock} to ${nextCursor}`
+      );
+
+      return eventsList.events;
    };
 }

@@ -4,16 +4,16 @@ import { CustomBaseEntity } from "./base.entity";
 @Entity({ name: "crawler_status" })
 export class CrawlerStatusEntity extends CustomBaseEntity {
    @Column({ name: "contract_name" })
-   contractName!: string;
+   contractName: string;
 
    @Column({ name: "contract_address" })
-   contractAddress!: string;
+   contractAddress: string;
 
    @Column({ name: "event_seq" })
-   eventSeq!: number;
+   eventSeq: number;
 
    @Column({ name: "block_timestamp" })
-   blockTimestamp!: Date;
+   blockTimestamp: Date;
 
    constructor(partial?: Partial<CrawlerStatusEntity>) {
       super();

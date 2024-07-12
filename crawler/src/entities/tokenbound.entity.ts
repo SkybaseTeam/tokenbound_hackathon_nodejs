@@ -1,30 +1,40 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { CustomBaseEntity } from "./base.entity";
+import { CollectionEntity } from "./collection.entity";
+import { NftEntity } from "./nft.entity";
 
 @Entity("tokenbound_account")
 export class TokenboundEntity extends CustomBaseEntity {
-   @Column({ name: "token_contract_address", type: "text" })
-   tokenContractAddress!: string;
+   @Column({ name: "tokenbound_address", type: "text",nullable: true })
+   tokenboundAddress: string;
 
    @Column({ name: "wallet_address", type: "text" })
-   walletAddress!: string;
+   walletAddress: string;
 
    @Column({ name: "token_id", type: "integer" })
-   tokenId!: number;
+   tokenId: number;
 
    @Column({type: "integer", default:0})
-   point!: number;
+   point: number;
 
    @Column({type: "text"})
-   name!: string;
+   name: string;
 
    @Column({type: "text"})
-   image!: string;
+   image: string;
 
    @Column({type: "float", default:0})
-   price!: number;
+   price: number;
 
-   constructor() {
+   @JoinColumn({ name: 'collection_id' })
+   @ManyToOne(() => CollectionEntity, (collection) => collection.tokenboundAccounts)
+   collection: CollectionEntity;
+
+   @OneToMany(() => NftEntity, (nft) => nft.tokenboundAccount)
+   nfts: NftEntity[];
+
+   constructor(partial?: Partial<TokenboundEntity>) {
       super();
+      Object.assign(this, partial);
    }
 }

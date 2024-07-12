@@ -2,38 +2,42 @@ import {
    Entity,
    Column,
    ManyToOne,
+   JoinColumn,
 } from "typeorm";
 import { CollectionEntity } from "./collection.entity";
-import { UsersEntity } from "./users.entity";
 import { CustomBaseEntity } from "./base.entity";
+import { TokenboundEntity } from "./tokenbound.entity";
 
 @Entity({ name: "nft" })
 export class NftEntity extends CustomBaseEntity {
    @Column({ name: "token_id" })
-   tokenId!: number;
+   tokenId: number;
 
    @Column({ nullable: false })
-   name!: string;
+   name: string;
 
    @Column({ nullable: false })
-   image!: string;
+   image: string;
 
    @Column({ nullable: false })
-   price!: Number;
+   price: Number;
 
    @Column({ nullable: false, default: false })
-   listing!: Boolean;
+   listing: Boolean;
 
    @Column({ nullable: false, default: () => "CURRENT_TIMESTAMP" })
-   timestamp!: Date;
+   timestamp: Date;
 
+   @JoinColumn({ name: 'collection_id' })
    @ManyToOne(() => CollectionEntity, (collection) => collection.nfts)
-   collection!: CollectionEntity;
+   collection: CollectionEntity;
 
-   @ManyToOne(() => UsersEntity, (user) => user.nfts)
-   user!: UsersEntity;
+   @JoinColumn({ name: 'tokenbound_id' })
+   @ManyToOne(() => TokenboundEntity, (tokenbound) => tokenbound.nfts)
+   tokenboundAccount: TokenboundEntity;
 
-   constructor() {
+   constructor(partial?: Partial<NftEntity>) {
       super();
+      Object.assign(this, partial);
    }
 }

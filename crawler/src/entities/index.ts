@@ -2,7 +2,6 @@ import "colors";
 // import Router from "koa-router";
 import { config } from "dotenv";
 import { DataSource, DataSourceOptions } from "typeorm";
-import { UsersEntity } from "./users.entity";
 import { CrawlerStatusEntity } from "./crawler-status.entity";
 import { JobManagerEntity } from "./job-manager.entity";
 import { CollectionEntity } from "./collection.entity";
@@ -11,14 +10,15 @@ import { TokenboundEntity } from "./tokenbound.entity";
 
 config();
 
-const { DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME } =
+const { DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME,DATABASE_PORT } =
    process.env;
-console.log(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
+console.log(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME,DATABASE_PORT);
 
-let databaseHost = DATABASE_HOST || "localhost";
-let databaseUser = DATABASE_USER || "postgres";
-let databasePassword = DATABASE_PASSWORD || "Phongsql123";
-let databaseName = DATABASE_NAME || "ventorii-nft";
+let databaseHost = DATABASE_HOST || "pg-27090a41-bling-blockchain.h.aivencloud.com";
+let databaseUser = DATABASE_USER || "avnadmin";
+let databasePassword = DATABASE_PASSWORD || "AVNS_5tBInksddd2BSHuiSqx";
+let databaseName = DATABASE_NAME || "bling-bling";
+let databasePort = Number(DATABASE_PORT) || 19096;
 
 const dataSourceOptions: DataSourceOptions = {
    type: "postgres",
@@ -28,8 +28,11 @@ const dataSourceOptions: DataSourceOptions = {
    database: databaseName,
    synchronize: false,
    logging: true,
+   port : databasePort,
+   ssl: {
+      rejectUnauthorized: false, // Disables SSL certificate verification
+   },
    entities: [
-      UsersEntity,
       JobManagerEntity,
       CrawlerStatusEntity,
       CollectionEntity,

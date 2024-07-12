@@ -1,29 +1,33 @@
 import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { NftEntity } from "./nft.entity";
 import { CustomBaseEntity } from "./base.entity";
+import { TokenboundEntity } from "./tokenbound.entity";
 
 @Entity({ name: "collection" })
 export class CollectionEntity extends CustomBaseEntity{
    @PrimaryGeneratedColumn()
-   id!: number;
+   id: number;
 
    @Column({ nullable: false, unique: true })
-   address!: string;
+   address: string;
 
    @Column({ nullable: false })
-   name!: string;
+   name: string;
 
    @Column({ nullable: false })
-   symbol!: string;
+   symbol: string;
 
    @Column({ nullable: false, name: "mint_price",type : "float" })
-   mintPrice!: number;
+   mintPrice: number;
 
    @Column({})
-   image !: string;
+   image : string;
 
    @OneToMany(() => NftEntity, (nft) => nft.collection)
-   nfts!: NftEntity[];
+   nfts: NftEntity[];
+
+   @OneToMany(() => TokenboundEntity, (tokenbound) => tokenbound.collection)
+   tokenboundAccounts: TokenboundEntity[];
 
    
 

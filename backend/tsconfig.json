@@ -17,6 +17,7 @@
      "emitDecoratorMetadata": true,
      "forceConsistentCasingInFileNames": true,
      "allowSyntheticDefaultImports": true,
+     "strictPropertyInitialization": false,
      "pretty": true,
      "resolveJsonModule": true,
      

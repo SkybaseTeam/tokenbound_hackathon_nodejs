@@ -1,9 +1,9 @@
-export { UsersService } from "./users.service";
-export {TokenboundService} from "./tokenbound.service";
-export {CollectionService}
+export { TokenboundService } from "./tokenbound.service";
+export { CollectionService } from "./collection.service";
+export { NftService } from "./nft.service";
 
-import { UsersService } from "./users.service";
-import { TokenboundService } from './tokenbound.service';
-import { CollectionService } from './collection.service';
+import { TokenboundService } from "./tokenbound.service";
+import { CollectionService } from "./collection.service";
+import { NftService } from "./nft.service";
 
-export const services = [UsersService, TokenboundService, CollectionService];
+export const services = [TokenboundService, CollectionService, NftService];

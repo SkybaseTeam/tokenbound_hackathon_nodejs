@@ -5,5 +5,5 @@ import { Entity, PrimaryGeneratedColumn} from "typeorm";
 export class CustomBaseEntity {
    @PrimaryGeneratedColumn()
    @IsEmpty({always : true, message : "Do not send the ID"})
-   id!: number;
+   id: number;
 }

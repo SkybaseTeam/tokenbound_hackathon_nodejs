@@ -8,7 +8,7 @@ import { NftEntity } from "./nft.entity";
 import { TokenboundEntity } from "./tokenbound.entity";
 import { Config } from "../config";
 
-const config :Config = new Config();
+const config: Config = new Config();
 const dataSourceOptions: DataSourceOptions = {
    type: "postgres",
    host: config.DATABASE_HOST,
@@ -32,6 +32,13 @@ const dataSourceOptions: DataSourceOptions = {
 
 export const connectWithDatabase = async (): Promise<DataSource> => {
    try {
+      console.log(
+         config.DATABASE_HOST,
+         config.DATABASE_USER,
+         config.DATABASE_PASSWORD,
+         config.DATABASE_NAME,
+         config.DATABASE_PORT
+      );
       const dataSource: DataSource = new DataSource(dataSourceOptions);
       (await dataSource.initialize())
          .synchronize(false)

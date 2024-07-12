@@ -8,7 +8,10 @@ import { Nft721Event } from "./enums/event.enum";
 import { CrawlerProcess } from "./helpers/crawler-process";
 import { CrawlerType } from "./enums/crawler.enum";
 import { CrawlerConstants } from "./constants/crawler.constant";
+import { Config } from "./config";
 
+
+const config: Config = new Config();
 const crawlNft721 = async () => {
    let database: DataSource = await connectWithDatabase();
    let fromBlock: number = await CrawlerProcess.setUpFirstBlock(
@@ -19,7 +22,7 @@ const crawlNft721 = async () => {
    let events = await CrawlerProcess.getEvents(
       fromBlock,
       Object.values(Nft721Event),
-      CrawlerConstants.ERC721_CONTRACT_ADDRESS
+      config.ERC721_CONTRACT_ADDRESS
    );
 
    const latestBlocknumber: number = await CrawlerProcess.getBlockNumber();

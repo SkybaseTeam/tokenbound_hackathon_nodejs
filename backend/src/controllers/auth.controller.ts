@@ -1,36 +1,74 @@
 import { Body, Controller, Post, UnauthorizedError } from "routing-controllers";
-import { UsersService } from "../services";
 import { Service } from "typedi";
 import { LoginRule } from "../dtos/request/login.rule";
-import { UsersEntity } from "../entities/users.entity";
-import { validate, ValidationError } from "class-validator";
 import { sign } from "jsonwebtoken";
 import { config } from "dotenv";
+import { TokenboundService } from "../services";
+import { TokenboundEntity } from "src/entities/tokenbound.entity";
+import { SignatureVerification } from "src/helpers/signature-verification";
+import { TokenboundAccountConnection } from "src/helpers/tokenbound-account-connection";
 config();
 let { JWT_SECRET } = process.env;
 
 @Controller("/auth")
 @Service()
 export class AuthController {
-   constructor(private readonly usersService: UsersService) {}
+   constructor(private readonly tokenboundService: TokenboundService) {}
 
    @Post("/login")
    async login(@Body() loginRequest: LoginRule): Promise<any> {
-      const { address } = loginRequest;
+      const {
+         walletAddress,
+         tokenboundAddress,
+         tokenContractAddress,
+         tokenId,
+         signature,
+         signData,
+      } = loginRequest;
+      console.log(walletAddress, tokenboundAddress);
       try {
-         const user = await this.usersService.getByAddress(address);
-         if (user) {
+         //? Verify the signature
+         const isVerified: boolean =
+            await SignatureVerification.verifySignatureStarknet({
+               walletAddress,
+               signature,
+               signData,
+            } as any);
+         if (!isVerified) {
+            throw new UnauthorizedError("Can not verify signature");
+         }
+
+         //? Verify the TokenboundAddress
+         const tokenboundAccount: TokenboundAccountConnection =
+            new TokenboundAccountConnection(tokenContractAddress, tokenId);
+         await tokenboundAccount.init();
+         const nftOwner =
+             await tokenboundAccount.getTokenboundOwner(tokenboundAddress);
+         if (!nftOwner) {
+            throw new UnauthorizedError("Can not get owner");
+         }
+
+         const user: TokenboundEntity[] =
+            await this.tokenboundService.getByWalletAddress(walletAddress);
+         // console.log(user);
+         if (user.length > 0) {
             const jwt = sign(
-               JSON.parse(JSON.stringify(user)),
+               JSON.parse(
+                  JSON.stringify({
+                     walletAddress: user[0].walletAddress,
+                     owner: nftOwner,
+                  })
+               ),
                JWT_SECRET || "ssdsfsdfdsfsfsdfsd"
             );
+            console.log(jwt);
             return { token: jwt };
          } else {
             throw new UnauthorizedError("User not found");
          }
       } catch (error) {
          throw new UnauthorizedError("User not found");
-      }                                                                       
+      }
    }
 
    // @Post("/register")

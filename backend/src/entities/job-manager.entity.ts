@@ -1,20 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, Column } from "typeorm";
 import { CustomBaseEntity } from "./base.entity";
 
 @Entity({ name: "job_manager" })
 export class JobManagerEntity extends CustomBaseEntity{
 
    @Column({ name: "contract_name" })
-   contractName!: string;
+   contractName: string;
 
    @Column({ name: "contract_address" })
-   contractAddress!: string;
+   contractAddress: string;
 
    @Column({ name: "status" })
-   eventSeq!: string;
+   eventSeq: string;
 
    @Column({ name: "job_name" })
-   jobName!: string;
+   jobName: string;
 
    constructor() {
       super();

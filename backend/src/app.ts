@@ -10,7 +10,12 @@ import {
    UnauthorizedError,
 } from "routing-controllers";
 import { connectWithDatabase } from "./entities";
-import { AuthController, CollectionController, TokenboundController, UserController } from "./controllers";
+import {
+   AuthController,
+   CollectionController,
+   NftController,
+   TokenboundController,
+} from "./controllers";
 import { services } from "./services";
 import { Container } from "typedi";
 import { decode, verify } from "jsonwebtoken";
@@ -20,31 +25,35 @@ import { Server } from "socket.io";
 import { createServer } from "node:http";
 import "reflect-metadata";
 import { connectWithSocket } from "./socket";
-import { config } from "dotenv";
 import { BaseService } from "./services/base.service";
 import { DeepPartial } from "typeorm";
-import { UsersEntity } from "./entities/users.entity";
-
-config();
-let { PORT, JWT_SECRET } = process.env;
+import { koaSwagger } from "koa2-swagger-ui";
+import serve from "koa-static";
+import { TokenboundEntity } from "./entities/tokenbound.entity";
+import { Config } from "./config";
 
 const startApp = async () => {
+   const config: Config = new Config();
    const dataSource = await connectWithDatabase();
    const app: Koa<DefaultState, DefaultContext> = createKoaServer({
-      controllers: [UserController, AuthController, CollectionController, TokenboundController],
+      controllers: [
+         AuthController,
+         CollectionController,
+         TokenboundController,
+         NftController,
+      ],
       async authorizationChecker(action: Action): Promise<boolean> {
          try {
             const token = getJWT(action.request.headers);
-            if (!verify(token, JWT_SECRET || "ssdsfsdfdsfsfsdfsd"))
+            if (!verify(token, config.JWT_SECRET))
                throw new UnauthorizedError();
-            const decoderUser: DeepPartial<UsersEntity> = await decodeJWT(
-               token
-            );
-            const user: DeepPartial<UsersEntity> = (await dataSource
-               .getRepository(UsersEntity)
+            const decoderUser: DeepPartial<TokenboundEntity> =
+               await decodeJWT(token);
+            const user: DeepPartial<TokenboundEntity> = (await dataSource
+               .getRepository(TokenboundEntity)
                .findOne({
                   where: { id: decoderUser.id },
-               })) as DeepPartial<UsersEntity>;
+               })) as DeepPartial<TokenboundEntity>;
             console.log(user);
             if (user) {
                action.context.user = user;
@@ -59,14 +68,13 @@ const startApp = async () => {
       async currentUserChecker(action: Action) {
          try {
             const token = getJWT(action.request.headers);
-            const decoderUser: DeepPartial<UsersEntity> = await decodeJWT(
-               token
-            );
-            const user: DeepPartial<UsersEntity> = (await dataSource
-               .getRepository(UsersEntity)
+            const decoderUser: DeepPartial<TokenboundEntity> =
+               await decodeJWT(token);
+            const user: DeepPartial<TokenboundEntity> = (await dataSource
+               .getRepository(TokenboundEntity)
                .findOne({
                   where: { id: decoderUser.id },
-               })) as DeepPartial<UsersEntity>;
+               })) as DeepPartial<TokenboundEntity>;
             console.log(user);
             if (user) {
                return user;
@@ -82,14 +90,23 @@ const startApp = async () => {
    app.context.database = dataSource;
    app.use(bodyParser());
    app.use(validationMiddleware);
-   // Set up service
+   //? Set up service
    services.forEach((service) => {
       Container.set(service, new service(app.context.database));
    });
-
    Container.set(BaseService, new BaseService(app.context.database));
    useContainer(Container);
 
+   //? Set up swagger
+   app.use(serve(__dirname + "/swagger.json"));
+   app.use(
+      koaSwagger({
+         routePrefix: "/swagger", // host at /swagger instead of default /docs
+         swaggerOptions: {
+            url: "/swagger.json", // example path to json
+         },
+      })
+   );
    const server = createServer(app.callback());
    const io = new Server(server, {
       cors: {
@@ -100,12 +117,21 @@ const startApp = async () => {
 
    connectWithSocket(io);
 
-   server.listen(PORT || 5000).on("listening", () => {
-      console.log(
-         `Server start on port ${PORT || 5000}, go to http://localhost:${
-            PORT || 5000
-         }`.blue.bold
-      );
+   server.listen(config.PORT  || 5002).on("listening", async () => {
+      try {
+         // let collection: DeepPartial<CollectionEntity> =
+         //    await GetCollection.getCollectionInformation(
+         //       StarknetConstants.ERC721_CONTRACT_ADDRESS
+         //    );
+         // await dataSource.getRepository(CollectionEntity).save(collection);
+
+         console.log(
+            `Server started on port ${config.PORT || 5000}, go to http://localhost:${config.PORT  || 5000}`
+               .blue.bold
+         );
+      } catch (error) {
+         console.error("Error while starting server:", error);
+      }
    });
 };
 
@@ -114,8 +140,10 @@ const getJWT = ({ authorization }: any) => {
    return token;
 };
 
-const decodeJWT = async (token: string): Promise<DeepPartial<UsersEntity>> => {
-   return (await decode(token)) as DeepPartial<UsersEntity>;
+const decodeJWT = async (
+   token: string
+): Promise<DeepPartial<TokenboundEntity>> => {
+   return (await decode(token)) as DeepPartial<TokenboundEntity>;
 };
 
 startApp();

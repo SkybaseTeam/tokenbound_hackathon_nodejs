@@ -1,7 +1,7 @@
 // import { StatusCodes } from "http-status-codes";
 import { constants, Contract, RpcProvider, typedData } from "starknet";
 
-class VerifySignature {
+export class SignatureVerification {
    public static verifySignatureStarknet = async (dataSign: any) => {
       try {
          const provider = new RpcProvider({

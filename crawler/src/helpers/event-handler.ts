@@ -4,6 +4,7 @@ import { DataDecoder } from "./data-decoder";
 import axios from "axios";
 import { TokenboundService } from "../services/tokenbound.service";
 import { TokenboundEntity } from "../entities/tokenbound.entity";
+import { TokenboundAccountConnection } from "./tokenbound-account-connection";
 // import { TokenboundEntity } from "../entities/tokenbound.entity";
 
 export class EventHandler {
@@ -49,16 +50,23 @@ export class EventHandler {
          low: event.data[1],
          high: event.data[2],
       });
+      const tokenContractAddress = event.data[0];
 
       const tokenboundService: TokenboundService = new TokenboundService(
          this.database
       );
+
+      const tokenboundAccount : TokenboundAccountConnection = new TokenboundAccountConnection(tokenContractAddress, tokenId);
+      await tokenboundAccount.init();
+      const tokenboundAddress : string = await tokenboundAccount.getTokenboundAddress();
+
+
       const tokenbound: TokenboundEntity | null =
          await tokenboundService.getTokenboundEntityByTokenId(tokenId);
       if (!tokenbound) {
          throw new Error("Cannot find tokenbound to modify");
       }
-      tokenbound.tokenboundAddress = event.data[0];
+      tokenbound.tokenboundAddress = tokenboundAddress;
       // tokenbound.tokenContractAddress = event.data[0];
       return await tokenboundService.updateEntityById(
          tokenbound.id,

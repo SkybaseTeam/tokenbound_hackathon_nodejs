@@ -1,37 +1,36 @@
 import { TokenboundClient, WalletClient, Call } from "starknet-tokenbound-sdk";
-import { useAccount } from "@starknet-react/core";
+// import { CrawlerConstants } from "../constants/crawler.constant";
+import { Config } from "../config";
 
-class TokenboundAccountConnection {
+const config: Config = new Config();
+export class TokenboundAccountConnection {
    private tokenContractAddress: string;
    private tokenId: number;
-   private walletAddress: string;
-   private privateKey: string;
    private tokenbound: TokenboundClient;
 
-   private readonly salt = "1000";
+   private readonly salt = "123";
 
-   constructor(
-      walletAddress: string,
-      tokenContractAddress: string,
-      tokenId: number
-   ) {
-      this.walletAddress = walletAddress;
+   constructor(tokenContractAddress: string, tokenId: number) {
       this.tokenContractAddress = tokenContractAddress;
       this.tokenId = tokenId;
+   }
 
-      this.connectWithWalletClient();
+   async init() {
+      await this.connectWithWalletClient();
    }
 
    private async connectWithWalletClient() {
       const walletClient: WalletClient = {
-         address: this.walletAddress,
-         privateKey: "",
+         address: config.WALLET_ADDRESS,
+         privateKey: config.WALLET_PRIVATE_KEY,
       };
+
       const options = {
          walletClient: walletClient,
-         registryAddress: this.tokenContractAddress,
-         implementationAddress: "",
-         jsonRPC: `https://starknet-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_API_KEY}`,
+         registryAddress: config.REGISTRY_CONTRACT_ADDRESS,
+         implementationAddress: config.PUBLIC_ACCOUNT_CLASS_HASH,
+
+         jsonRPC: `https://starknet-sepolia.public.blastapi.io/rpc/v0_7`,
       };
       const tokenbound = new TokenboundClient(options);
       this.tokenbound = tokenbound;

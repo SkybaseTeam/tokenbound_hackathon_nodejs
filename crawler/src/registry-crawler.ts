@@ -4,8 +4,10 @@ import "reflect-metadata";
 import { RegistryEvent } from "./enums/event.enum";
 import { CrawlerProcess } from "./helpers/crawler-process";
 import { CrawlerType } from "./enums/crawler.enum";
-import { CrawlerConstants } from "./constants/crawler.constant";
+// import { CrawlerConstants } from "./constants/crawler.constant";
+import { Config } from "./config";
 
+const config: Config = new Config();
 const crawlRegistry = async () => {
    let database: DataSource = await connectWithDatabase();
    let fromBlock: number = await CrawlerProcess.setUpFirstBlock(
@@ -16,7 +18,7 @@ const crawlRegistry = async () => {
    let events = await CrawlerProcess.getEvents(
       fromBlock,
       Object.values(RegistryEvent),
-      CrawlerConstants.REGISTRY_CONTRACT_ADDRESS
+      config.REGISTRY_CONTRACT_ADDRESS
    );
 
    const latestBlocknumber: number = await CrawlerProcess.getBlockNumber();

@@ -13,6 +13,7 @@ export class CollectionController {
    constructor(private readonly collectionService: CollectionService) {}
 
    @Get("/")
+   // @body((CollectionEntity as any).swaggerDocument)
    async get() {
       try {
          let collections = await this.collectionService.getAllData();
@@ -21,7 +22,8 @@ export class CollectionController {
                await GetCollection.getCollectionInformation(
                   StarknetConstants.ERC721_CONTRACT_ADDRESS
                );
-            let collectionResult = await this.collectionService.create(collection);
+            let collectionResult =
+               await this.collectionService.create(collection);
             return collectionResult;
          }
          return collections[0];

@@ -3,7 +3,7 @@ import { connectWithDatabase } from "./entities";
 import "reflect-metadata";
 // import { CrawlerStatusService } from "./services/crawler-status.service";
 // import { CrawlerStatusEntity } from "./entities/crawler-status.entity";
-import { Nft721Event } from "./enums/event.enum";
+import { Nft721Event, RegistryEvent } from "./enums/event.enum";
 // import { EventHandler } from "./helpers/event-handler";
 import { CrawlerProcess } from "./helpers/crawler-process";
 import { CrawlerType } from "./enums/crawler.enum";

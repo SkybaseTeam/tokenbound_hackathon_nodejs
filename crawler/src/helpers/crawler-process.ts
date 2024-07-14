@@ -80,6 +80,7 @@ export class CrawlerProcess {
                case RegistryEvent.ACCOUNT_CREATED: {
                   await eventHandler.handleRegistryCreateAccount(event);
                }
+               break;
             }
          }
          break;
@@ -88,6 +89,7 @@ export class CrawlerProcess {
                case Nft721Event.NFT_MINTED: {
                   await eventHandler.handleNFTMinted(event);
                }
+               break;
             }
          }
          break;
@@ -103,6 +105,7 @@ export class CrawlerProcess {
                break;
             }
          }
+         break;
       }
    };
 

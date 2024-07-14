@@ -18,6 +18,12 @@ export class TokenboundService extends BaseService<TokenboundEntity> {
       });
    }
 
+   async getByTokenId(tokenId: number): Promise<TokenboundEntity | null> {
+      return await this.repository.findOne({
+         where: { tokenId: tokenId } as any,
+      });
+   }
+
    async getByTokenboundAddress(
       address: string
    ): Promise<TokenboundEntity | null> {
@@ -33,11 +39,11 @@ export class TokenboundService extends BaseService<TokenboundEntity> {
       });
    }
 
-   async search(name: string,): Promise<TokenboundEntity[]> {
+   async search(name: string): Promise<TokenboundEntity[]> {
       return await this.repository.find({
          where: { listing: true, name: ILike(`%${name}%`) },
          relations: ["nfts"],
-         order : {id : "ASC"}
+         order: { id: "ASC" },
       });
    }
 }

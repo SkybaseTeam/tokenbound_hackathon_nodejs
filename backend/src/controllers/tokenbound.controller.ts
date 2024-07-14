@@ -14,6 +14,9 @@ import { DeepPartial } from "typeorm";
 import { StatusCodes } from "http-status-codes";
 // import { CollectionService } from "../services/collection.service";
 import { Pagination } from "../dtos/response/pagination";
+import { Account, Contract, RpcProvider } from "starknet";
+import { Config } from "../config";
+import { StarknetConstants } from "../constants/starknet.constant";
 
 @Controller("/tokenbound")
 @Service()
@@ -111,7 +114,7 @@ export class TokenboundController {
             await this.tokenboundService.search(name);
          const tokenBoundAccounts = allTokenBoundAccounts.slice(
             (pageNumber - 1) * pageSize,
-            pageNumber * pageSize 
+            pageNumber * pageSize
          );
          const pageTotal = Math.ceil(allTokenBoundAccounts.length / pageSize);
          const pagination: Pagination<TokenboundEntity> = new Pagination(
@@ -125,6 +128,119 @@ export class TokenboundController {
          throw new HttpError(
             StatusCodes.INTERNAL_SERVER_ERROR,
             "Profile getting failed"
+         );
+      }
+   }
+
+   @Post("/refresh-owner")
+   async refreshOwner(@Body() { tokenId }: { tokenId: number }) {
+      const config: Config = new Config();
+      try {
+         const provider = new RpcProvider({
+            nodeUrl: "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
+         });
+         const account = new Account(
+            provider,
+            config.WALLET_ADDRESS,
+            config.WALLET_PRIVATE_KEY
+         );
+         const { abi } = await provider.getClassAt(
+            StarknetConstants.ERC721_CONTRACT_ADDRESS
+         );
+         const nftContract = new Contract(
+            abi,
+            StarknetConstants.ERC721_CONTRACT_ADDRESS,
+            account
+         );
+         const owner = await nftContract.ownerOf(tokenId);
+         const address = "0x" + owner.toString(16);
+
+         const tokenbound: TokenboundEntity | null =
+            await this.tokenboundService.getByTokenId(tokenId);
+         if (!tokenbound) {
+            throw new Error("Cannot find account has token id =" + tokenId);
+         }
+         tokenbound.walletAddress = address;
+         await this.tokenboundService.update(tokenbound.id, tokenbound);
+      } catch (error) {
+         throw new HttpError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            "Can not update wallet address"
+         );
+      }
+   }
+
+   @Post("/refresh-listing-status")
+   async refreshListingStatus(@Body() { tokenId }: { tokenId: number }) {
+      const config: Config = new Config();
+      try {
+         const provider = new RpcProvider({
+            nodeUrl: "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
+         });
+         const account = new Account(
+            provider,
+            config.WALLET_ADDRESS,
+            config.WALLET_PRIVATE_KEY
+         );
+         const { abi } = await provider.getClassAt(
+            StarknetConstants.ERC721_CONTRACT_ADDRESS
+         );
+         const nftContract = new Contract(
+            abi,
+            StarknetConstants.ERC721_CONTRACT_ADDRESS,
+            account
+         );
+         const owner = await nftContract.ownerOf(tokenId);
+         const address = "0x" + owner.toString(16);
+         const listingStatus = address === config.MARKET_CONTRACT_ADDRESS;
+
+         const tokenbound: TokenboundEntity | null =
+            await this.tokenboundService.getByTokenId(tokenId);
+         if (!tokenbound) {
+            throw new Error("Cannot find account has token id =" + tokenId);
+         }
+         tokenbound.listing = listingStatus;
+         await this.tokenboundService.update(tokenbound.id, tokenbound);
+      } catch (error) {
+         throw new HttpError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            "Can not update wallet address"
+         );
+      }
+   }
+
+   @Post("/refresh-price")
+   async refreshPrice(@Body() { tokenId }: { tokenId: number }) {
+      const config: Config = new Config();
+      try {
+         const provider = new RpcProvider({
+            nodeUrl: "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
+         });
+         const account = new Account(
+            provider,
+            config.WALLET_ADDRESS,
+            config.WALLET_PRIVATE_KEY
+         );
+         const { abi } = await provider.getClassAt(config.MARKET_CONTRACT_ADDRESS);
+         const marketContract = new Contract(
+           abi,
+           config.MARKET_CONTRACT_ADDRESS,
+           account,
+         );
+         const price = await marketContract.get_nft_price(tokenId);
+         const formattedPrice = Number(price) / 10 ** 18;
+
+         const tokenbound: TokenboundEntity | null =
+            await this.tokenboundService.getByTokenId(tokenId);
+         if (!tokenbound) {
+            throw new Error("Cannot find account has token id =" + tokenId);
+         }
+         tokenbound.price = formattedPrice;
+         await this.tokenboundService.update(tokenbound.id, tokenbound);
+      } catch (error) {
+         throw new HttpError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            "Can not update wallet address"
          );
       }
    }

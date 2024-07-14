@@ -34,7 +34,7 @@ const crawlNft721Item = async () => {
 
    for (let event of events) {
       console.log(event.keys[0]);
-      CrawlerProcess.handleEvents(event, database, CrawlerType.NFT721_ITEM);
+      await CrawlerProcess.handleEvents(event, database, CrawlerType.NFT721_ITEM);
    }
 };
 

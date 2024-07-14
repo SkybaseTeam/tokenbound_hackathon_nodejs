@@ -4,9 +4,9 @@ import { LoginRule } from "../dtos/request/login.rule";
 import { sign } from "jsonwebtoken";
 import { config } from "dotenv";
 import { TokenboundService } from "../services";
-import { TokenboundEntity } from "src/entities/tokenbound.entity";
-import { SignatureVerification } from "src/helpers/signature-verification";
-import { TokenboundAccountConnection } from "src/helpers/tokenbound-account-connection";
+import { TokenboundEntity } from "../entities/tokenbound.entity";
+import { SignatureVerification } from "../helpers/signature-verification";
+import { TokenboundAccountConnection } from "../helpers/tokenbound-account-connection";
 config();
 let { JWT_SECRET } = process.env;
 

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@koa/cors": "^5.0.0",
     "@starknet-react/core": "^2.8.3",
     "@tanstack/react-query": "^5.51.1",
     "@tokenbound/sdk": "^0.5.4",
@@ -9,6 +10,7 @@
     "@types/koa-static": "^4.0.4",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
+    "@types/koa__cors": "^5.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "colors": "^1.4.0",
@@ -38,6 +40,7 @@
     "@types/koa-bodyparser": "^4.3.12",
     "@types/koa-router": "^7.4.8",
     "@types/koa-static": "^4.0.4",
+    "@types/koa__cors": "^5.0.0",
     "@types/node": "^20.14.9",
     "globals": "^15.8.0",
     "prettier": "^3.3.2",

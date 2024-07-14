@@ -27,22 +27,31 @@ export class EventHandler {
       const tokenboundService: TokenboundService = new TokenboundService(
          this.database
       );
-      const tokenboundDuplicated =
+      const existTokenboundAccount: TokenboundEntity | null =
          await tokenboundService.getTokenboundEntityByTokenId(tokenId);
-      if (tokenboundDuplicated) throw new Error("Tokenbound already created");
-      await tokenboundService.createNewTokenboundEntity({
-         tokenId: tokenId,
-         walletAddress: userAddress,
-         name: nftMetadata.name,
-         image: nftMetadata.image,
-      });
-      // newTokenbound.collection
-      // nftService.createNft({
-      //    tokenId: tokenId,
-      //    name: nftMetadata.name,
-      //    user: userAddress,
-      //    image: nftMetadata.image,
-      // });
+      if (!existTokenboundAccount) {
+         await tokenboundService.createNewTokenboundEntity({
+            tokenId: tokenId,
+            walletAddress: userAddress,
+            name: nftMetadata.name,
+            image: nftMetadata.image,
+         });
+         return;
+      }
+
+      if (
+         existTokenboundAccount.name &&
+         existTokenboundAccount.walletAddress &&
+         existTokenboundAccount.image
+      )
+         throw new Error("Do not need to update tokenbound");
+      existTokenboundAccount.walletAddress = userAddress;
+      existTokenboundAccount.name = nftMetadata.name;
+      existTokenboundAccount.image = nftMetadata.image;
+      await tokenboundService.updateEntityById(
+         existTokenboundAccount.id,
+         existTokenboundAccount
+      );
    };
 
    public handleRegistryCreateAccount = async (event: any) => {
@@ -56,22 +65,89 @@ export class EventHandler {
          this.database
       );
 
-      const tokenboundAccount : TokenboundAccountConnection = new TokenboundAccountConnection(tokenContractAddress, tokenId);
-      await tokenboundAccount.init();
-      const tokenboundAddress : string = await tokenboundAccount.getTokenboundAddress();
-
-
-      const tokenbound: TokenboundEntity | null =
+      //? Check tokenbound account exists or not
+      const existTokenboundAccount: TokenboundEntity | null =
          await tokenboundService.getTokenboundEntityByTokenId(tokenId);
-      if (!tokenbound) {
-         throw new Error("Cannot find tokenbound to modify");
+
+      const tokenboundAccount: TokenboundAccountConnection =
+         await new TokenboundAccountConnection(tokenContractAddress, tokenId);
+      const tokenboundAddress: string =
+         await tokenboundAccount.getTokenboundAddress();
+
+      if (!existTokenboundAccount) {
+         await tokenboundService.createNewTokenboundEntity({
+            tokenId: tokenId,
+            tokenboundAddress: tokenboundAddress,
+         });
+         return;
       }
-      tokenbound.tokenboundAddress = tokenboundAddress;
-      // tokenbound.tokenContractAddress = event.data[0];
+
+      // if (existTokenboundAccount?.tokenboundAddress) {
+      //    throw new Error("Do not need to update tokenbound");
+      // }
+      existTokenboundAccount.tokenboundAddress = tokenboundAddress;
       return await tokenboundService.updateEntityById(
-         tokenbound.id,
-         tokenbound
+         existTokenboundAccount.id,
+         existTokenboundAccount
       );
+   };
+
+   public handleListNft = async (event: any) => {
+      const tokenId = DataDecoder.feltToInt({
+         low: event.data[1],
+         high: event.data[2],
+      });
+      const price = DataDecoder.feltToInt({
+         low: event.data[3],
+         high: event.data[4],
+      });
+
+      try {
+         const tokenboundService: TokenboundService = new TokenboundService(
+            this.database
+         );
+         const existTokenboundAccount: TokenboundEntity | null =
+            await tokenboundService.getTokenboundEntityByTokenId(tokenId);
+         if (!existTokenboundAccount)
+            throw new Error("Cannot find tokenbound entity");
+         existTokenboundAccount.price = price / 10 ** 18;
+         existTokenboundAccount.listing = true;
+         // existTokenboundAccount.name = "Potatoz #2";
+
+         const a = await tokenboundService.updateEntityById(
+            existTokenboundAccount.id,
+            existTokenboundAccount
+         );
+
+         console.log(a);
+      } catch (error) {
+         throw new Error("Can not update tokenbound entity");
+      }
+   };
+
+   public handleRemoveNftFromMarket = async (event: any) => {
+      const tokenId = DataDecoder.feltToInt({
+         low: event.data[1],
+         high: event.data[2],
+      });
+
+      try {
+         const tokenboundService: TokenboundService = new TokenboundService(
+            this.database
+         );
+         const existTokenboundAccount: TokenboundEntity | null =
+            await tokenboundService.getTokenboundEntityByTokenId(tokenId);
+         if (!existTokenboundAccount)
+            throw new Error("Cannot find tokenbound entity");
+         existTokenboundAccount.price = 0;
+         existTokenboundAccount.listing = false;
+         tokenboundService.updateEntityById(
+            existTokenboundAccount.id,
+            existTokenboundAccount
+         );
+      } catch (error) {
+         throw new Error("Can not update tokenbound entity");
+      }
    };
 
    // static async handleListedEvent(

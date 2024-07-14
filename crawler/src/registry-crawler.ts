@@ -13,7 +13,7 @@ const crawlRegistry = async () => {
    let fromBlock: number = await CrawlerProcess.setUpFirstBlock(
       database,
       CrawlerType.REGISTRY,
-      79000
+      80300
    );
    let events = await CrawlerProcess.getEvents(
       fromBlock,
@@ -29,11 +29,11 @@ const crawlRegistry = async () => {
    );
 
    console.log("REGISTRY REGISTRY REGISTRY REGISTRY REGISTRY REGISTRY");
-   console.log(events);
+   // console.log(events);
 
    for (let event of events) {
       console.log(event.keys[0]);
-      CrawlerProcess.handleEvents(event, database, CrawlerType.REGISTRY);
+      await CrawlerProcess.handleEvents(event, database, CrawlerType.REGISTRY);
    }
 };
 

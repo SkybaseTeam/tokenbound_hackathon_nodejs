@@ -5,29 +5,29 @@ import { NftEntity } from "./nft.entity";
 
 @Entity("tokenbound_account")
 export class TokenboundEntity extends CustomBaseEntity {
-   @Column({ name: "tokenbound_address", type: "text" ,nullable: true})
+   @Column({ name: "tokenbound_address", type: "text",nullable: true })
    tokenboundAddress: string;
 
-   @Column({ name: "wallet_address", type: "text" })
+   @Column({ name: "wallet_address", type: "text",nullable: true })
    walletAddress: string;
 
-   @Column({ name: "token_id", type: "integer" })
+   @Column({ name: "token_id", type: "integer", nullable: false, unique: true })
    tokenId: number;
 
    @Column({type: "integer", default:0})
    point: number;
 
-   @Column({type: "text"})
+   @Column({type: "text", nullable: true})
    name: string;
 
-   @Column({type: "text"})
+   @Column({type: "text", nullable: true})
    image: string;
-
-   @Column({ nullable: false, default: false })
-   listing: Boolean;
 
    @Column({type: "float", default:0})
    price: number;
+
+   @Column({ nullable: false, default: false })
+   listing: Boolean;
 
    @JoinColumn({ name: 'collection_id' })
    @ManyToOne(() => CollectionEntity, (collection) => collection.tokenboundAccounts)

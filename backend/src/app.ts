@@ -2,6 +2,7 @@ import Koa from "koa";
 import { DefaultState, DefaultContext } from "koa";
 import "colors";
 import bodyParser from "koa-bodyparser";
+import cors from "@koa/cors";
 // import Router from "koa-router";
 import {
    createKoaServer,
@@ -16,6 +17,7 @@ import {
    NftController,
    TokenboundController,
 } from "./controllers";
+
 import { services } from "./services";
 import { Container } from "typedi";
 import { decode, verify } from "jsonwebtoken";
@@ -89,6 +91,14 @@ const startApp = async () => {
    // const router: Router = new Router();
    app.context.database = dataSource;
    app.use(bodyParser());
+   app.use(
+      cors({
+         origin: "*",
+         credentials: true,
+         // allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+         // allowHeaders: ["Content-Type", "Authorization"],
+      })
+   );
    app.use(validationMiddleware);
    //? Set up service
    services.forEach((service) => {
@@ -117,7 +127,7 @@ const startApp = async () => {
 
    connectWithSocket(io);
 
-   server.listen(config.PORT  || 5002).on("listening", async () => {
+   server.listen(config.PORT || 5002).on("listening", async () => {
       try {
          // let collection: DeepPartial<CollectionEntity> =
          //    await GetCollection.getCollectionInformation(
@@ -126,7 +136,7 @@ const startApp = async () => {
          // await dataSource.getRepository(CollectionEntity).save(collection);
 
          console.log(
-            `Server started on port ${config.PORT || 5000}, go to http://localhost:${config.PORT  || 5000}`
+            `Server started on port ${config.PORT || 5000}, go to http://localhost:${config.PORT || 5000}`
                .blue.bold
          );
       } catch (error) {

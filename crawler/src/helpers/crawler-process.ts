@@ -3,7 +3,7 @@ import { CrawlerStatusEntity } from "../entities/crawler-status.entity";
 import { CrawlerStatusService } from "../services/crawler-status.service";
 import { DataSource, DeepPartial } from "typeorm";
 import { EventHandler } from "./event-handler";
-import { Nft721Event, RegistryEvent } from "../enums/event.enum";
+import { MarketEvent, Nft721Event, RegistryEvent } from "../enums/event.enum";
 import axios from "axios";
 // import { CrawlerConstants } from "../constants/crawler.constant";
 import { constants, RpcProvider } from "starknet";
@@ -16,7 +16,10 @@ export class CrawlerProcess {
             method: "starknet_blockNumber",
             id: 0,
          };
-         const { data } = await axios.post("https://starknet-sepolia.public.blastapi.io/rpc/v0_7", body);
+         const { data } = await axios.post(
+            "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
+            body
+         );
          return data?.result || 0;
       } catch (error) {
          throw error;
@@ -65,7 +68,7 @@ export class CrawlerProcess {
       );
    };
 
-   public static handleEvents = (
+   public static handleEvents = async (
       event: any,
       dataSource: DataSource,
       crawlerType: CrawlerType
@@ -75,21 +78,39 @@ export class CrawlerProcess {
          case CrawlerType.REGISTRY: {
             switch (event.keys[0]) {
                case RegistryEvent.ACCOUNT_CREATED: {
-                  eventHandler.handleRegistryCreateAccount(event);
+                  await eventHandler.handleRegistryCreateAccount(event);
                }
             }
          }
+         break;
          case CrawlerType.NFT721: {
             switch (event.keys[0]) {
                case Nft721Event.NFT_MINTED: {
-                  eventHandler.handleNFTMinted(event);
+                  await eventHandler.handleNFTMinted(event);
                }
+            }
+         }
+         break;
+         case CrawlerType.MARKET: {
+            switch (event.keys[0]) {
+               case MarketEvent.NFT_LISTED: {
+                  await eventHandler.handleListNft(event);
+               }
+               break;
+               case MarketEvent.NFT_CANCELLED: {
+                  await eventHandler.handleRemoveNftFromMarket(event);
+               }
+               break;
             }
          }
       }
    };
 
-   public static getEvents = async (fromBlock: number, eventType : any, address : string) => {
+   public static getEvents = async (
+      fromBlock: number,
+      eventType: any,
+      address: string
+   ) => {
       console.log(`Start crawling event Scout`);
       const providerRPC = new RpcProvider({
          nodeUrl: constants.NetworkName.SN_SEPOLIA,

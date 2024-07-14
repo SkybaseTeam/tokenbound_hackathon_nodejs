@@ -24,16 +24,43 @@ export class TokenboundService extends BaseService<TokenboundEntity> {
       try {
          const newTokenboundEntity: TokenboundEntity =
             (await this.createNewEntity(entity)) as TokenboundEntity;
-         const collection = await this.database
+         const collection: CollectionEntity | null = await this.database
             .getRepository(CollectionEntity)
-            .findOne({ where: { id: 1 } });
+            .findOne({ where: { id: 1 }, relations: ["tokenboundAccounts"] });
          if (!collection) throw new Error("Couldn't find collection");
-         if (!collection?.tokenboundAccounts) {
+         console.log("-----------------------------------");
+         console.log(collection.tokenboundAccounts);
+         if (!collection.tokenboundAccounts) {
             collection.tokenboundAccounts = [];
          }
          collection?.tokenboundAccounts?.push(newTokenboundEntity);
-         this.database.getRepository(CollectionEntity).save(collection);
+         await this.database.getRepository(CollectionEntity).save(collection);
          return newTokenboundEntity;
+      } catch (error) {
+         throw error;
+      }
+   }
+
+   public async updateStatus(
+      crawlerStatus: DeepPartial<TokenboundEntity>,
+      tokenId: number,
+      price: number
+   ): Promise<any> {
+      try {
+         const existTokenboundAccount: TokenboundEntity = (await this.database
+            .getRepository(TokenboundEntity)
+            .findOne({
+               where: { tokenId: tokenId },
+            })) as TokenboundEntity;
+
+         existTokenboundAccount.price = price;
+         existTokenboundAccount.listing = true;
+
+         Object.assign(existTokenboundAccount, crawlerStatus);
+         await this.database
+            .getRepository(TokenboundEntity)
+            .save(existTokenboundAccount);
+         return crawlerStatus;
       } catch (error) {
          throw error;
       }

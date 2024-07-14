@@ -16,7 +16,7 @@ const dataSourceOptions: DataSourceOptions = {
    password: config.DATABASE_PASSWORD,
    database: config.DATABASE_NAME,
    synchronize: false,
-   logging: true,
+   logging: false,
    port: config.DATABASE_PORT,
    ssl: {
       rejectUnauthorized: false, // Disables SSL certificate verification

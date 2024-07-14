@@ -12,7 +12,7 @@ export class Config {
    public PORT: number;
 
    public PUBLIC_ACCOUNT_CLASS_HASH: string;
-   public WALLET_ADDRESS: string;
+   public WALLET_ADDRESS: string; 
    public WALLET_PRIVATE_KEY: string;
 
    public REGISTRY_CONTRACT_ADDRESS: string;
@@ -24,7 +24,7 @@ export class Config {
    constructor() {
       // this.DATABASE_HOST =
       //    process.env.DATABASE_HOST ||
-      //    "pg-27090a41-bling-blockchain.h.aivencloud.com";
+      //    "localhost";
       // this.DATABASE_USER = process.env.DATABASE_USER || "postgres";
       // this.DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || "Phongsql123";
       // this.DATABASE_NAME = process.env.DATABASE_NAME || "ventorii-nft";

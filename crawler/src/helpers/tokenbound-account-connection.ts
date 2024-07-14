@@ -1,4 +1,4 @@
-import { TokenboundClient, WalletClient, Call } from "starknet-tokenbound-sdk";
+import { TokenboundClient, WalletClient } from "starknet-tokenbound-sdk";
 // import { CrawlerConstants } from "../constants/crawler.constant";
 import { Config } from "../config";
 
@@ -13,10 +13,8 @@ export class TokenboundAccountConnection {
    constructor(tokenContractAddress: string, tokenId: number) {
       this.tokenContractAddress = tokenContractAddress;
       this.tokenId = tokenId;
-   }
 
-   async init() {
-      await this.connectWithWalletClient();
+      this.connectWithWalletClient();
    }
 
    private async connectWithWalletClient() {
@@ -35,6 +33,7 @@ export class TokenboundAccountConnection {
       const tokenbound = new TokenboundClient(options);
       this.tokenbound = tokenbound;
    }
+
 
    public async getTokenboundAddress(): Promise<string> {
       const account = await this.tokenbound.getAccount({

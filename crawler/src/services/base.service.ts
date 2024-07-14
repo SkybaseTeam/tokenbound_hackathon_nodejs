@@ -52,9 +52,18 @@ export class BaseService<T extends CustomBaseEntity> {
          if (entity) {
             Object.assign(entity, newEntityInformation);
             await this.repository.save(entity);
+            
             return entity;
          }
          throw new Error(`Entity with ID ${id} not found`);
+      } catch (error) {
+         throw error;
+      }
+   }
+
+   public async saveEntity(entity: T) {
+      try {
+         return await this.repository.save(entity);
       } catch (error) {
          throw error;
       }

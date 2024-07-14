@@ -7,7 +7,7 @@ import { Nft721Event } from "./enums/event.enum";
 // import { EventHandler } from "./helpers/event-handler";
 import { CrawlerProcess } from "./helpers/crawler-process";
 import { CrawlerType } from "./enums/crawler.enum";
-import { CrawlerConstants } from "./constants/crawler.constant";
+// import { CrawlerConstants } from "./constants/crawler.constant";
 import { Config } from "./config";
 
 
@@ -17,7 +17,7 @@ const crawlNft721 = async () => {
    let fromBlock: number = await CrawlerProcess.setUpFirstBlock(
       database,
       CrawlerType.NFT721,
-      77500
+      80300
    );
    let events = await CrawlerProcess.getEvents(
       fromBlock,
@@ -33,7 +33,7 @@ const crawlNft721 = async () => {
    );
 
    console.log("NFT721 NFT721 NFT721 NFT721 NFT721 NFT721");
-   console.log(events);
+   // console.log(events);
    for (let event of events) {
       console.log(event.keys[0]);
       // await CrawlerProcess.updateCrawlerStatus(
@@ -41,8 +41,37 @@ const crawlNft721 = async () => {
       //    database,
       //    CrawlerType.NFT721
       // );
-      CrawlerProcess.handleEvents(event, database, CrawlerType.NFT721);
+      await CrawlerProcess.handleEvents(event, database, CrawlerType.NFT721);
    }
+
+
+   ///////////////////////
+   // let fromBlockRegistryEvent: number = await CrawlerProcess.setUpFirstBlock(
+   //    database,
+   //    CrawlerType.REGISTRY,
+   //    80300
+   // );
+   // let registryEvents = await CrawlerProcess.getEvents(
+   //    fromBlock,
+   //    Object.values(RegistryEvent),
+   //    config.REGISTRY_CONTRACT_ADDRESS
+   // );
+
+   // const latestBlocknumberRegistryEvent: number = await CrawlerProcess.getBlockNumber();
+   // await CrawlerProcess.updateCrawlerStatus(
+   //    fromBlockRegistryEvent + 100 < latestBlocknumberRegistryEvent ? fromBlockRegistryEvent + 100 : latestBlocknumberRegistryEvent,
+   //    database,
+   //    CrawlerType.REGISTRY
+   // );
+
+   // console.log("REGISTRY REGISTRY REGISTRY REGISTRY REGISTRY REGISTRY");
+   // console.log(events);
+
+   // for (let event of registryEvents) {
+   //    console.log(event.keys[0]);
+   //    CrawlerProcess.handleEvents(event, database, CrawlerType.REGISTRY);
+   // }
+
 };
 
 crawlNft721();

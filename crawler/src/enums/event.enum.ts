@@ -9,3 +9,8 @@ export enum Nft721Event {
 export enum RegistryEvent {
    ACCOUNT_CREATED = "0x1d9ca8a89626bead91b5cb4275a622219e9443975b34f3fdbc683e8621231a9",
 }
+
+export enum MarketEvent {
+   NFT_LISTED = "0x20f5aee8382e6ae7b26c3afdaef75c848fee2e1a99f0ab01ae881586a399625",
+   NFT_CANCELLED = "0x385b765d6fb48ec129fe830abdf59b32f90fb7aaa154c2d84121395addf3425",
+}

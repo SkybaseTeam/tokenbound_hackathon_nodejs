@@ -2,7 +2,7 @@ import express from 'express';
 import { config } from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import morgan from 'morgan';
+import { v2 as cloudinary } from 'cloudinary';
 import checkToken from './authentication/auth.js';
 import connect from './database/index.js';
 import userRouter from './router/userRouter.js';
@@ -13,6 +13,12 @@ import nftRouter from './router/nftRouter.js';
 import imageRouter from './router/image.js';
 
 config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const app = express();
 

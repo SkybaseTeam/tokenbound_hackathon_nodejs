@@ -2,16 +2,9 @@ import { RpcProvider, Contract } from 'starknet';
 import { v2 as cloudinary } from 'cloudinary';
 import formidable from 'formidable';
 import fs from 'fs';
-import axios from 'axios';
 import { feltToStr, formatStarknet, hashValue } from '../utils/index.js';
 import { tbaModel } from '../models/tbaModel.js';
 import { COLLECTION_NAME, IMAGE_FOLDER_DATA } from '../constant/index.js';
-
-cloudinary.config({
-  cloud_name: 'dfnvpr9lg',
-  api_key: '759248853929979',
-  api_secret: 'b0nSkahJOSGf8tAA91NMsq0GaJ0',
-});
 
 export const refresh_mint_status = async (req, res) => {
   try {

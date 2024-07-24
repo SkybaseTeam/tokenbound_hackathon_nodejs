@@ -1,0 +1,42 @@
+{
+  "name": "be-ventorii-nft-marketplace",
+  "version": "1.0.0",
+  "description": "Basic NFT-Marketplace on Starknet",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "debug": "node inspect src/index.js",
+    "lint": "eslint .",
+    "format": "npx prettier --write .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "bcrypt": "^5.1.0",
+    "cloudinary": "^2.3.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "formidable": "^3.5.1",
+    "jsonwebtoken": "^9.0.1",
+    "jwt-decode": "^4.0.0",
+    "mongoose": "^7.4.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1",
+    "starknet": "^5.29.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.0.2",
+    "@eslint/js": "^9.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "globals": "^15.0.0",
+    "prettier": "^3.3.3"
+  }
+}
